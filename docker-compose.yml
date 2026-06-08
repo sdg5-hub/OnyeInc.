@@ -1,0 +1,12 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    # lib/auth/config.ts validates required vars (e.g. SUPABASE_JWT_SECRET)
+    # at startup and fails fast with a clear error if any are missing —
+    # no need to duplicate that check here.
+    env_file:
+      - .env

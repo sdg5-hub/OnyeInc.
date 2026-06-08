@@ -64,6 +64,27 @@ npx vite-node scripts/mint-test-token.ts -- imaging_tech         # 403 without -
 npx vite-node scripts/mint-test-token.ts -- imaging_tech --mfa   # 200 with --mfa
 ```
 
+## Run with Docker Compose
+
+Builds the standalone production server (`output: "standalone"` in
+`next.config.ts`, copied by the Dockerfile's multi-stage build — see
+`Dockerfile`) and runs it in a container, reading `.env` for config:
+
+```bash
+cp .env.example .env
+# Add your SUPABASE_JWT_SECRET — lib/auth/config.ts validates it at
+# startup and fails fast with a clear error if it's missing
+
+docker compose up --build
+```
+
+The app is then reachable at `http://localhost:3000`, exactly as with
+`npm run dev` — exercise it the same way (`scripts/mint-test-token.ts` +
+curl, per "Run" above). `docker compose down` stops it.
+
+This mirrors the container shape Render/Railway expect; `docker-compose.yml`
+is for local parity, not a production deployment manifest.
+
 ## Test
 
 ```bash

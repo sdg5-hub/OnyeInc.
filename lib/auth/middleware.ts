@@ -74,3 +74,18 @@ export function requireRole(...allowedRoles: Role[]) {
     return user;
   };
 }
+
+// Harden mfaVerified claim parsing in lib/auth/middleware.ts:23 — replace Boolean(claims.mfa_verified ?? false) 
+// with a typeof === 'boolean' guard so a string 'false' claim can't bypass the imaging_tech MFA gate
+
+// Make ALL_ROLES exhaustive against the Role union in lib/auth/middleware.ts:8 (e.g. derive via satisfies Record<Role, true>) 
+// so TS catches drift if a new role variant is ever added without updating the runtime list
+
+// Normalize trailing-slash matching for PUBLIC_PATHS in middleware.ts:5/18 — /api/health/ currently misses the exact-string match 
+// and falls through to the auth check (401 instead of reaching the health route)
+
+// Reconsider double JWT verification per request — root middleware.ts and each route handler both call getCurrentUser, 
+// so the HS256 signature is verified twice; consider forwarding verified claims via request headers if this surface goes to production
+
+// Optionally align extractToken's header parsing in lib/auth/tokens.ts:21 with the Python spike's split(' ')
+// [1] behavior — currently diverges only on malformed headers with embedded spaces (both end in 401 either way)
