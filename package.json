@@ -13,6 +13,9 @@
     "ladle:build": "ladle build"
   },
   "dependencies": {
+    "@cornerstonejs/core": "^4.22.13",
+    "@cornerstonejs/dicom-image-loader": "^4.22.13",
+    "@cornerstonejs/tools": "^4.22.13",
     "@radix-ui/react-dialog": "^1.1.16",
     "@radix-ui/react-dropdown-menu": "^2.1.17",
     "@radix-ui/react-progress": "^1.1.9",
@@ -20,6 +23,7 @@
     "@supabase/ssr": "^0.10.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "dicom-parser": "^1.8.21",
     "jose": "^6.2.0",
     "lucide-react": "^1.17.0",
     "next": "15.5.19",
