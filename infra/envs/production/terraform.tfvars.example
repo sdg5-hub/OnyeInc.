@@ -1,5 +1,6 @@
 # Copy to terraform.tfvars and fill in values — never commit terraform.tfvars.
-# In CI, set these as TF_VAR_* environment variables or Terraform Cloud workspace variables.
+# In CI, these are sourced from Terraform Cloud workspace variables (not
+# TF_VAR_* env vars) — see docs/runbooks/provision-environment.md.
 
 b2_master_key_id          = "your-b2-key-id"
 b2_master_key             = "your-b2-key-secret"

@@ -38,7 +38,7 @@ via API token — all on the free tier, which covers the full MVP resource count
 
 ## Consequences
 
-- A Terraform Cloud organisation named `onye` must be created at app.terraform.io
+- A Terraform Cloud organisation named `onye-dev` must be created at app.terraform.io
   before `terraform init` can run.
 - All `terraform apply` runs for production must be performed manually from
   Terraform Cloud's UI or CLI — never auto-applied by CI.
