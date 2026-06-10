@@ -1,3 +1,5 @@
+import "@testing-library/jest-dom";
+
 import { TEST_SECRET } from "@/lib/auth/test-helpers";
 
 // Must run before any module reads process.env (Vitest setupFiles
