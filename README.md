@@ -1,3 +1,20 @@
+# LEG-002 Async ZIP Pipeline Handoff
+
+This branch adds the LEG-002 async legal ZIP export architecture spike:
+
+- ADR: `docs/adr/leg-002-async-zip.md`
+- Handoff README: `docs/leg-002/README.md`
+- Migration: `db/migrations/20260609170000_leg_002_zip_jobs.sql`
+- ZIP job policy helpers: `lib/legal/zip-jobs.ts`
+- Synthetic streaming ZIP prototype: `lib/legal/zip-prototype.ts`
+- Tests: `tests/lib/legal/`
+
+Key decisions: Backblaze B2, not R2; `yazl`, not `fflate`; Supabase
+`zip_jobs` as durable state; no Redis/Celery; worker runtime must be
+BAA-covered before production PHI use.
+
+---
+
 # IC-002 Auth Middleware Spike (TypeScript / Next.js)
 
 Spike output for IC-002 ("Authentication & Session Management" ADR, status
