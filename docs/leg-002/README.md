@@ -39,12 +39,12 @@ LEG-002 documents and prototypes the async legal ZIP export pipeline.
     `SELECT ... FOR UPDATE SKIP LOCKED`
 - Live Backblaze B2 upload script added at:
   `/scripts/leg-002-b2-live-prototype.ts`
+- Live Backblaze B2 synthetic upload passed against
+  `onye-leg-002-synthetic-test`: `524288000` synthetic input bytes,
+  `524376598` ZIP bytes, `101` parts, `12687144` peak heap bytes.
 
 ## Remaining Environment-Gated DoD
 
-- Run the live 500MB synthetic streaming ZIP-to-B2 prototype with
-  non-production B2 credentials.
-- Record peak memory from that live upload.
 - Confirm production worker runtime BAA coverage before any PHI processing.
 - Update LEG-304 in Jira to reference the ADR before sprint entry.
 

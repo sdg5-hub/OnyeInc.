@@ -263,6 +263,26 @@ coverage:
   - two concurrent workers claimed distinct PENDING jobs with SELECT FOR UPDATE SKIP LOCKED
 ```
 
+Live Backblaze B2 synthetic upload result:
+
+```text
+command: ./node_modules/.bin/sucrase-node scripts/leg-002-b2-live-prototype.ts
+bucket: onye-leg-002-synthetic-test
+objectKey: legal-exports/leg002_synthetic_token/leg002_synthetic_study.zip
+b2FileId: 4_zdb17f073f392a9e792ec0918_f20056f6cac5938cd_d20260610_m004415_c005_v0501045_t0043_u01781052255120
+syntheticStudySizeBytes: 524288000
+zipSizeBytes: 524376598
+partSizeBytes: 5242880
+partCount: 101
+peakHeapBytes: 12687144
+filesAdded: 500
+downloadUrlExpiresAt: 2026-06-17T00:44:14.295Z
+objectExpiresAt: 2026-06-18T00:44:14.295Z
+```
+
+The signed URL itself is intentionally not committed because it contains a
+temporary Backblaze download authorization token.
+
 ## LEG-304 Handoff
 
 LEG-304 implementation must follow this ADR:
