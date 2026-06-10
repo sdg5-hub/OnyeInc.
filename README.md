@@ -7,11 +7,26 @@ This branch adds the LEG-002 async legal ZIP export architecture spike:
 - Migration: `db/migrations/20260609170000_leg_002_zip_jobs.sql`
 - ZIP job policy helpers: `lib/legal/zip-jobs.ts`
 - Synthetic streaming ZIP prototype: `lib/legal/zip-prototype.ts`
+- Live B2 synthetic upload sink: `lib/legal/b2-sink.ts`
 - Tests: `tests/lib/legal/`
 
 Key decisions: Backblaze B2, not R2; `yazl`, not `fflate`; Supabase
 `zip_jobs` as durable state; no Redis/Celery; worker runtime must be
 BAA-covered before production PHI use.
+
+LEG-002 validation performed on this branch:
+
+- `npm run test`
+- `npm run lint`
+- `npm run build`
+- Local 500MB synthetic ZIP stream into multipart counting sink
+- Real Postgres integration test for dedupe and `SELECT ... FOR UPDATE SKIP LOCKED`
+
+Live B2 upload command, after non-production B2 env vars are set:
+
+```bash
+./node_modules/.bin/sucrase-node scripts/leg-002-b2-live-prototype.ts
+```
 
 ---
 

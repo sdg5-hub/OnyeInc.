@@ -7,6 +7,7 @@ LEG-002 documents and prototypes the async legal ZIP export pipeline.
 - ADR: `/docs/adr/leg-002-async-zip.md`
 - Migration: `/db/migrations/20260609170000_leg_002_zip_jobs.sql`
 - Policy/prototype helpers: `/lib/legal/zip-jobs.ts`
+- Live B2 sink: `/lib/legal/b2-sink.ts`
 - Tests: `/tests/lib/legal/zip-jobs.test.ts`
 
 ## Decisions
@@ -32,11 +33,28 @@ LEG-002 documents and prototypes the async legal ZIP export pipeline.
 - Local 500MB synthetic ZIP stream run with multipart counting sink:
   `524288000` synthetic input bytes, `524376598` ZIP bytes, `101` parts,
   `11062688` peak heap bytes.
+- Real Postgres integration test passed for:
+  - deduplication: two `zip_jobs` rows pointing at one object key/file id
+  - concurrency: two workers claiming distinct jobs via
+    `SELECT ... FOR UPDATE SKIP LOCKED`
+- Live Backblaze B2 upload script added at:
+  `/scripts/leg-002-b2-live-prototype.ts`
 
 ## Remaining Environment-Gated DoD
 
-- Run the 500MB synthetic streaming ZIP-to-B2 prototype with non-production B2
-  credentials.
+- Run the live 500MB synthetic streaming ZIP-to-B2 prototype with
+  non-production B2 credentials.
 - Record peak memory from that live upload.
 - Confirm production worker runtime BAA coverage before any PHI processing.
 - Update LEG-304 in Jira to reference the ADR before sprint entry.
+
+## Live B2 Prototype Command
+
+Set the B2 variables from `.env.example`, then run:
+
+```bash
+./node_modules/.bin/sucrase-node scripts/leg-002-b2-live-prototype.ts
+```
+
+Do not point this at production PHI buckets. Use a non-production B2 bucket and
+synthetic data only.

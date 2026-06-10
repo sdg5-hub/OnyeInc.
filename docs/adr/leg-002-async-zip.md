@@ -220,6 +220,23 @@ The live B2 500MB test requires non-production B2 credentials and synthetic data
 If credentials are unavailable, the code-level prototype and mock tests can be
 committed, but the live upload result remains an open DoD item.
 
+Live B2 upload script:
+
+```text
+scripts/leg-002-b2-live-prototype.ts
+```
+
+Required non-production environment variables:
+
+```text
+B2_APPLICATION_KEY_ID
+B2_APPLICATION_KEY
+B2_BUCKET_ID
+B2_BUCKET_NAME
+LEG_002_TOKEN_ID
+LEG_002_STUDY_ID
+```
+
 Local synthetic prototype result from this branch:
 
 ```text
@@ -234,6 +251,17 @@ peakHeapBytes: 11062688
 
 This result proves the local stream bridge and multipart chunking path without
 live B2 credentials. The live B2 upload remains environment-gated.
+
+Real Postgres integration result from this branch:
+
+```text
+command: LEG_002_DATABASE_URL=postgres://postgres:postgres@127.0.0.1:54329/onye_leg002 npm run test -- tests/integration/legal/zip-jobs.postgres.test.ts
+result: 2 passed
+coverage:
+  - two webhook-style inserts for the same study produced two zip_jobs rows
+  - both rows referenced one B2 object key/file id
+  - two concurrent workers claimed distinct PENDING jobs with SELECT FOR UPDATE SKIP LOCKED
+```
 
 ## LEG-304 Handoff
 
