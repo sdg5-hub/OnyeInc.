@@ -5,7 +5,7 @@ LEG-002 documents and prototypes the async legal ZIP export pipeline.
 ## Branch Scope
 
 - ADR: `/docs/adr/leg-002-async-zip.md`
-- Migration: `/db/migrations/20260609170000_leg_002_zip_jobs.sql`
+- Release migration: `/db/migrations/db_migration_2026_0_0.sql`
 - Policy/prototype helpers: `/lib/legal/zip-jobs.ts`
 - Live B2 sink: `/lib/legal/b2-sink.ts`
 - Tests: `/tests/lib/legal/zip-jobs.test.ts`

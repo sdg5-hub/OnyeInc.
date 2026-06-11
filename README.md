@@ -4,7 +4,7 @@ This branch adds the LEG-002 async legal ZIP export architecture spike:
 
 - ADR: `docs/adr/leg-002-async-zip.md`
 - Handoff README: `docs/leg-002/README.md`
-- Migration: `db/migrations/20260609170000_leg_002_zip_jobs.sql`
+- Release migration: `db/migrations/db_migration_2026_0_0.sql`
 - ZIP job policy helpers: `lib/legal/zip-jobs.ts`
 - Synthetic streaming ZIP prototype: `lib/legal/zip-prototype.ts`
 - Live B2 synthetic upload sink: `lib/legal/b2-sink.ts`

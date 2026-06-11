@@ -179,7 +179,7 @@ The migration creates `zip_job_status` and `zip_jobs` with the ticket-required
 fields plus B2, expiry, and worker-lock metadata. See:
 
 ```text
-/db/migrations/20260609170000_leg_002_zip_jobs.sql
+/db/migrations/db_migration_2026_0_0.sql
 ```
 
 Key additions beyond the original ticket:

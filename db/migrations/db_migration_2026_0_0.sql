@@ -1,3 +1,5 @@
+-- zip_job starts
+
 create type zip_job_status as enum (
   'PENDING',
   'PROCESSING',
@@ -90,3 +92,5 @@ on zip_jobs (token_id);
 create index zip_jobs_deduped_from_idx
 on zip_jobs (deduped_from_job_id)
 where deduped_from_job_id is not null;
+
+-- zip_job ends

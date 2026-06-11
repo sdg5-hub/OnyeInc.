@@ -18,7 +18,7 @@ describeWithDatabase("LEG-002 zip_jobs Postgres integration", () => {
     await admin.query(`set search_path to ${quoteIdentifier(schema)}, public`);
     await admin.query("create extension if not exists pgcrypto");
     const migration = await readFile(
-      join(process.cwd(), "db/migrations/20260609170000_leg_002_zip_jobs.sql"),
+      join(process.cwd(), "db/migrations/db_migration_2026_0_0.sql"),
       "utf8",
     );
     await admin.query(migration);
