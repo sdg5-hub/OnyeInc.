@@ -14,7 +14,7 @@ links.
 
 ## Runtime Environment
 
-Required Railway secrets:
+Required Render service environment secrets:
 
 - `PAT101_INTERNAL_WEBHOOK_SECRET`
 - `PAT101_APP_BASE_URL`

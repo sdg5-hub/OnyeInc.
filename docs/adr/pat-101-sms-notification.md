@@ -7,12 +7,16 @@
 ## Decision
 
 When IC-202 transitions an imaging study to `COMPLETE`, Supabase will trigger a
-secure server-side request to the Railway-hosted token API service. Railway owns
+secure server-side request to the Render-hosted token API service. Render owns
 the Twilio SDK call, phone normalization, idempotency, audit logging, structured
 error logging, and dashboard warning persistence.
 
-No Twilio call is made from the browser. Twilio credentials stay in Railway
-secrets.
+No Twilio call is made from the browser. Twilio credentials stay in Render
+service environment secrets.
+
+This ADR intentionally follows the S0 infrastructure decision to use Render for
+the token API service, superseding older PAT-101 ticket wording that referenced
+a different service host.
 
 ## Flow
 
@@ -20,10 +24,10 @@ secrets.
 2. A Supabase `pg_net` database trigger calls:
    `POST /internal/pat-101/send-sms`.
 3. The request includes `studyId` and `X-Internal-Webhook-Secret`.
-4. Railway verifies the secret.
-5. Railway loads `facilityName`, `patientPhone`, token expiry, and the plaintext
+4. Render verifies the secret.
+5. Render loads `facilityName`, `patientPhone`, token expiry, and the plaintext
    IC-203 share token through the `pat_101_sms_context` view/contract.
-6. Railway claims a `patient_sms_notifications` row for race-safe idempotency.
+6. Render claims a `patient_sms_notifications` row for race-safe idempotency.
 7. Phone is normalized to E.164 with `libphonenumber-js`.
 8. SMS is sent with the official `twilio` Node.js SDK.
 9. Success/failure is persisted to `patient_sms_notifications`, `audit_log`, and,
@@ -42,7 +46,7 @@ ready and includes a bearer link.
 
 ## Supabase Trigger
 
-`pg_net` should trigger Railway only after the study status changes to
+`pg_net` should trigger Render only after the study status changes to
 `COMPLETE`. The trigger depends on the final IC-202 `studies` table and should be
 installed when that schema lands:
 
@@ -82,7 +86,7 @@ execute function public.notify_sms_on_study_complete();
 
 ## Data Contract
 
-The Railway adapter reads from a `pat_101_sms_context` view/contract with:
+The Render service adapter reads from a `pat_101_sms_context` view/contract with:
 
 - `study_id`
 - `facility_name`
