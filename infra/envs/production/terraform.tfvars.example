@@ -1,0 +1,15 @@
+# Copy to terraform.tfvars and fill in values — never commit terraform.tfvars.
+# In CI, these are sourced from Terraform Cloud workspace variables (not
+# TF_VAR_* env vars) — see docs/runbooks/provision-environment.md.
+
+b2_master_key_id          = "your-b2-key-id"
+b2_master_key             = "your-b2-key-secret"
+supabase_access_token     = "sbp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+supabase_project_ref      = "your-production-project-ref"
+supabase_service_role_key = "eyJ..."
+render_api_key            = "rnd_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+render_owner_id           = "usr_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+tus_docker_image          = "ghcr.io/onye/tus-server:sha-abc123"
+
+# Optional — defaults to ["https://app.onye.health"].
+# b2_allowed_origins = ["https://app.onye.health"]

@@ -1,0 +1,15 @@
+# Copy to terraform.tfvars and fill in values — never commit terraform.tfvars.
+# In CI, these are sourced from Terraform Cloud workspace variables (not
+# TF_VAR_* env vars) — see docs/runbooks/provision-environment.md.
+
+b2_master_key_id          = "your-b2-key-id"
+b2_master_key             = "your-b2-key-secret"
+# Optional — defaults to ["https://staging.onye.health"]. Add a localhost
+# origin here for local frontend development against the staging B2 bucket.
+b2_allowed_origins        = ["https://staging.onye.health", "http://localhost:3000"]
+supabase_access_token     = "sbp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+supabase_project_ref      = "your-staging-project-ref"
+supabase_service_role_key = "eyJ..."
+render_api_key            = "rnd_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+render_owner_id           = "usr_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+tus_docker_image          = "ghcr.io/onye/tus-server:latest"
