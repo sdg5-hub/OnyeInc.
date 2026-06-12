@@ -9,6 +9,9 @@ links.
 - Internal route: `/app/api/internal/pat-101/send-sms/route.ts`
 - SMS service: `/lib/patient-sms/`
 - Migration section: `/db/migrations/db_migration_2026_0_0.sql`
+- Supabase trigger handoff: `/docs/pat-101/supabase-trigger.sql`
+- Staging validation runbook: `/docs/runbooks/pat-101-staging-validation.md`
+- Smoke test script: `/scripts/pat-101-smoke-test.mjs`
 - Tests: `/test/lib/patient-sms/service.test.ts` and
   `/test/api/patient-sms-route.test.ts`
 
@@ -23,6 +26,21 @@ Required Render service environment secrets:
 - `TWILIO_ACCOUNT_SID`
 - `TWILIO_AUTH_TOKEN`
 - `TWILIO_MESSAGING_SERVICE_SID` or `TWILIO_FROM_NUMBER`
+
+## Staging Smoke Test
+
+After PAT-101 is deployed to Render, verify endpoint routing before the full
+status-transition test:
+
+```bash
+PAT101_SMOKE_BASE_URL="https://<render-staging-url>" \
+PAT101_INTERNAL_WEBHOOK_SECRET="<staging-secret>" \
+PAT101_SMOKE_STUDY_ID="<study-uuid>" \
+npm run pat101:smoke
+```
+
+Use `/docs/runbooks/pat-101-staging-validation.md` for the full external DoD
+evidence checklist.
 
 ## External DoD Still Required
 

@@ -6,6 +6,7 @@ import {
   NO_PHONE_WARNING,
   normalizePatientPhone,
   processPatientSmsNotification,
+  redactPatientViewerPath,
   type DashboardWarning,
   type PatientSmsRepository,
   type SmsAuditEvent,
@@ -38,6 +39,13 @@ describe("PAT-101 SMS service", () => {
     expect(phone).toBe("+12125550100");
     expect(hashPatientPhone(phone)).toMatch(/^[a-f0-9]{64}$/);
     expect(hashPatientPhone(phone)).not.toContain("212");
+  });
+
+  it("redacts patient viewer bearer tokens from URLs and paths before logging", () => {
+    expect(redactPatientViewerPath("/v/plaintext-token-123?utm=sms")).toBe("/v/[REDACTED]?utm=sms");
+    expect(redactPatientViewerPath("https://app.onyesync.com/v/plaintext-token-123")).toBe(
+      "https://app.onyesync.com/v/[REDACTED]",
+    );
   });
 
   it("sends one Twilio SMS, writes a sent audit event, and stores only the phone hash", async () => {

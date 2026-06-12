@@ -14,6 +14,7 @@
     "test:server": "vitest run --config vitest.server.config.ts",
     "test:server:coverage": "vitest run --config vitest.server.config.ts --coverage",
     "test:e2e": "playwright test",
+    "pat101:smoke": "node scripts/pat-101-smoke-test.mjs",
     "ladle": "ladle serve",
     "ladle:build": "ladle build"
   },
