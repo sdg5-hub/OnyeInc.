@@ -94,3 +94,71 @@ on zip_jobs (deduped_from_job_id)
 where deduped_from_job_id is not null;
 
 -- zip_job ends
+
+-- pat_101_sms starts
+
+create table if not exists patient_sms_notifications (
+  id uuid primary key default gen_random_uuid(),
+  study_id uuid not null,
+  channel text not null default 'SMS',
+  status text not null check (status in ('SENDING', 'SENT', 'FAILED')),
+  recipient_phone_hash text null,
+  twilio_message_sid text null,
+  failure_reason text null,
+  dashboard_warning text null,
+  attempt_source text not null default 'AUTO_COMPLETE',
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  sent_at timestamptz null,
+
+  constraint patient_sms_notifications_channel_sms check (channel = 'SMS')
+);
+
+create unique index if not exists patient_sms_notifications_one_attempt_idx
+on patient_sms_notifications (study_id, channel);
+
+create index if not exists patient_sms_notifications_status_idx
+on patient_sms_notifications (status, created_at);
+
+create table if not exists study_dashboard_warnings (
+  id uuid primary key default gen_random_uuid(),
+  study_id uuid not null,
+  code text not null,
+  message text not null,
+  severity text not null default 'warning',
+  is_active boolean not null default true,
+  created_at timestamptz not null default now()
+);
+
+create index if not exists study_dashboard_warnings_active_idx
+on study_dashboard_warnings (study_id, is_active, created_at);
+
+create table if not exists structured_error_log (
+  id uuid primary key default gen_random_uuid(),
+  component text not null,
+  study_id uuid null,
+  error_code text not null,
+  error_type text not null,
+  safe_message text not null,
+  timestamp timestamptz not null default now()
+);
+
+create index if not exists structured_error_log_component_idx
+on structured_error_log (component, timestamp);
+
+create table if not exists audit_log (
+  id uuid primary key default gen_random_uuid(),
+  event_type text not null,
+  study_id uuid null,
+  recipient_phone_hash text null,
+  twilio_message_sid text null,
+  failure_reason text null,
+  timestamp timestamptz not null default now(),
+  metadata jsonb not null default '{}'::jsonb
+);
+
+create index if not exists audit_log_sms_sent_idx
+on audit_log (study_id, event_type, timestamp)
+where event_type in ('SMS_NOTIFICATION_SENT', 'SMS_NOTIFICATION_FAILED');
+
+-- pat_101_sms ends
