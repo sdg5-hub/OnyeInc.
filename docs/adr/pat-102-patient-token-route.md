@@ -28,13 +28,16 @@ PAT-102 owns:
 PAT-102 does not own:
 
 - SMS delivery; PAT-101 owns SMS.
-- DOB verification/session behavior; PAT-201 owns `/verify/[token]`.
-- IC-203 token table creation or token issuance.
+- Full DOB verification/session behavior; PAT-201 owns the production
+  `/verify/[token]` workflow.
+- Full IC-203 token issuance and delivery.
 - One-time-use semantics unless IC-203 later defines them.
 
 ## Database Contract
 
-IC-203 must expose a view named `pat_102_patient_token_context`:
+To make PAT-102 independently testable, this branch creates a minimal
+`share_tokens` compatibility table and exposes a view named
+`pat_102_patient_token_context`:
 
 ```sql
 token_hash text
@@ -46,10 +49,15 @@ revoked_at timestamptz null
 
 PAT-102 adds:
 
+- `share_tokens` compatibility fields needed for hashed-token lookup, expiry,
+  revocation, and facility-specific error copy.
 - `audit_log` support columns for `PATIENT_LINK_ACCESSED`.
 - `patient_link_rate_limits`.
 - `pat_102_record_rate_limit_hit(...)` RPC for atomic one-minute IP-hash rate
   limiting.
+
+IC-203 can later extend `share_tokens`, but it must preserve the
+`pat_102_patient_token_context` view contract.
 
 ## Outcomes
 
@@ -70,6 +78,13 @@ PAT-102 adds:
 - Sentry should keep `sendDefaultPii=false` and apply the redaction helper to
   events, breadcrumbs, transactions, tags, messages, and span data where the SDK
   supports hooks for those fields.
+
+## Independent Staging Seed
+
+Run `npm run pat102:seed` with Supabase service-role credentials to create one
+valid, one expired, and one revoked staging token. The script generates
+plaintext tokens locally, stores only hashes, and prints the plaintext `/v/...`
+URLs to the terminal for validation.
 
 ## Source Links
 

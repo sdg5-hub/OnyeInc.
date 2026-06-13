@@ -4,13 +4,27 @@ Use this after PAT-102 is reviewed, merged, and deployed to staging.
 
 ## Prerequisites
 
-- IC-203 token table is present.
-- `pat_102_patient_token_context` view exists with `token_hash`, `token_id`,
-  `facility_name`, `expires_at`, and `revoked_at`.
-- PAT-201 route `/verify/[token]` exists or a staging placeholder route is
-  available.
+- PAT-102 migration is applied, including `share_tokens`,
+  `pat_102_patient_token_context`, `patient_link_rate_limits`, and
+  `audit_log`.
+- PAT-102 placeholder route `/verify/[token]` is deployed. PAT-201 can replace
+  the placeholder later without changing `/v/[token]` behavior.
 - Render service has Supabase and hashing/audit secrets configured.
 - Sentry staging is enabled with token path redaction.
+
+## Seed Staging Tokens
+
+Create valid, expired, and revoked staging tokens:
+
+```bash
+SUPABASE_URL="https://<project>.supabase.co" \
+SUPABASE_SERVICE_ROLE_KEY="<service-role-key>" \
+PATIENT_TOKEN_HASH_SECRET="<same-secret-used-by-render>" \
+npm run pat102:seed
+```
+
+The command prints `/v/<token>` URLs for staging validation. Store them in a
+secure staging note only; do not commit them.
 
 ## Test Matrix
 

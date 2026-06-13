@@ -5,10 +5,12 @@ PAT-102 adds the patient SMS short-link route and validation layer.
 ## Key Files
 
 - Route: `/app/v/[token]/page.tsx`
+- Compatibility verify target: `/app/verify/[token]/page.tsx`
 - Error UI: `/components/patient-token-error.tsx`
 - Validation helpers: `/lib/patient-token/`
 - Sentry redaction helper: `/lib/observability/sentry-redaction.ts`
 - Migration section: `/db/migrations/db_migration_2026_0_0.sql`
+- Staging seed script: `/scripts/pat-102-seed-tokens.mjs`
 - ADR: `/docs/adr/pat-102-patient-token-route.md`
 - Staging runbook: `/docs/runbooks/pat-102-staging-validation.md`
 - Tests: `/test/lib/patient-token/validate.test.ts` and
@@ -27,10 +29,22 @@ Recommended for production parity:
 - `PAT102_AUDIT_HASH_SECRET` or `AUDIT_HASH_SECRET`
 - `PAT102_SUPPORT_URL`
 
+## Independent Validation Support
+
+This branch includes a minimal compatibility layer so PAT-102 can be validated
+without waiting for the full IC-203/PAT-201 implementation:
+
+- `share_tokens` table with hashed token, facility, expiry, and revocation
+  fields.
+- `pat_102_patient_token_context` view used by the route.
+- `/verify/[token]` placeholder route for redirect-target validation.
+- `npm run pat102:seed` to create valid, expired, and revoked staging tokens.
+
+The seed script prints plaintext staging URLs to the terminal only. Do not commit
+those generated values.
+
 ## External DoD Still Required
 
-- IC-203 provides the `pat_102_patient_token_context` view.
-- PAT-201 route exists at `/verify/[token]`.
 - Route is deployed to staging Render.
 - Staging validates all five audit outcomes.
 - Sentry staging confirms token-bearing `/v/[token]` and `/verify/[token]`

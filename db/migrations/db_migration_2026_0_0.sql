@@ -118,6 +118,46 @@ create index if not exists audit_log_patient_link_outcome_idx
 on audit_log (event_type, outcome, timestamp desc)
 where event_type = 'PATIENT_LINK_ACCESSED';
 
+create table if not exists share_tokens (
+  id uuid primary key default gen_random_uuid(),
+  study_id uuid null,
+  token_hash text not null unique,
+  facility_name text not null default 'your imaging facility',
+  created_at timestamptz not null default now(),
+  expires_at timestamptz not null,
+  created_by_user_id uuid null,
+  delivery_method text null,
+  recipient_contact_encrypted text null,
+  access_count integer not null default 0,
+  max_access_count integer null,
+  revoked_at timestamptz null,
+  constraint share_tokens_access_count_nonnegative check (access_count >= 0),
+  constraint share_tokens_max_access_count_nonnegative check (
+    max_access_count is null or max_access_count >= 0
+  ),
+  constraint share_tokens_delivery_method_check check (
+    delivery_method is null
+    or delivery_method in ('SMS', 'EMAIL', 'COPY_LINK')
+  )
+);
+
+alter table share_tokens enable row level security;
+
+create index if not exists share_tokens_token_hash_idx
+on share_tokens (token_hash);
+
+create index if not exists share_tokens_expiry_revocation_idx
+on share_tokens (expires_at, revoked_at);
+
+create or replace view pat_102_patient_token_context
+with (security_invoker = true) as
+select token_hash,
+       id as token_id,
+       facility_name,
+       expires_at,
+       revoked_at
+from share_tokens;
+
 create table if not exists patient_link_rate_limits (
   ip_address_hash text not null,
   window_start timestamptz not null,
@@ -172,8 +212,7 @@ begin
 end;
 $$;
 
--- IC-203 must provide a pat_102_patient_token_context view with:
+-- IC-203 may later extend share_tokens, but it must preserve this view contract:
 -- token_hash, token_id, facility_name, expires_at, revoked_at.
--- PAT-102 intentionally does not create the token source table.
 
 -- pat_102 ends
