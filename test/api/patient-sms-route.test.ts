@@ -46,6 +46,21 @@ describe("POST /api/internal/pat-101/send-sms", () => {
       twilioMessageSid: "SM_TEST",
     });
   });
+
+  it("returns a sanitized diagnostic when SMS processing throws", async () => {
+    const processSms = vi.fn().mockRejectedValue(new Error("Twilio failed for +12125550100"));
+
+    const res = await handlePatientSmsRequest(makeRequest({ studyId: STUDY_ID }, "secret"), {
+      webhookSecret: "secret",
+      processSms,
+    });
+
+    expect(res.status).toBe(500);
+    expect(await res.json()).toEqual({
+      error: "PAT101_SMS_PROCESSING_FAILED",
+      detail: "Twilio failed for [REDACTED_PHONE]",
+    });
+  });
 });
 
 function makeRequest(body: unknown, secret?: string): NextRequest {

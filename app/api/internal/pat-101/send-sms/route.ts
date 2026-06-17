@@ -51,8 +51,10 @@ export async function handlePatientSmsRequest(
     const processSms = deps.processSms ?? createDefaultSmsProcessor();
     const result = await processSms(studyId);
     return NextResponse.json(result, { status: 200 });
-  } catch {
-    return NextResponse.json({ error: "PAT101_SMS_PROCESSING_FAILED" }, { status: 500 });
+  } catch (err) {
+    const detail = toSafeDiagnostic(err);
+    console.error("PAT-101 SMS processing failed", { detail });
+    return NextResponse.json({ error: "PAT101_SMS_PROCESSING_FAILED", detail }, { status: 500 });
   }
 }
 
@@ -68,6 +70,15 @@ function safeSecretEquals(left: string, right: string): boolean {
   const rightBuffer = Buffer.from(right);
   if (leftBuffer.length !== rightBuffer.length) return false;
   return timingSafeEqual(leftBuffer, rightBuffer);
+}
+
+function toSafeDiagnostic(err: unknown): string {
+  const message = err instanceof Error ? err.message : "Unknown PAT-101 processing error.";
+  return message
+    .replace(/\/v\/[^/?#\s]+/g, "/v/[REDACTED]")
+    .replace(/\+[1-9]\d{7,14}/g, "[REDACTED_PHONE]")
+    .replace(/Bearer\s+[A-Za-z0-9._~+/=-]+/g, "Bearer [REDACTED]")
+    .replace(/apikey:\s*[A-Za-z0-9._~+/=-]+/gi, "apikey: [REDACTED]");
 }
 
 function createDefaultSmsProcessor(): SmsProcessor {
