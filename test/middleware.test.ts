@@ -20,6 +20,11 @@ describe("middleware", () => {
     expect(isPassThrough(res)).toBe(true);
   });
 
+  it("passes the PAT-101 internal SMS webhook through without a bearer token", async () => {
+    const res = await middleware(authedRequest("http://test/api/internal/pat-101/send-sms"));
+    expect(isPassThrough(res)).toBe(true);
+  });
+
   it("passes through a protected path when the bearer token is valid", async () => {
     const token = await makeTestToken({ role: "provider" });
     const res = await middleware(authedRequest("http://test/api/me", token));

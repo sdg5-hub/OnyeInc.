@@ -2,7 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 
 import { getCurrentUser, toErrorResponse } from "@/lib/auth";
 
-const PUBLIC_PATHS = ["/api/health"];
+const PUBLIC_PATHS = ["/api/health", "/api/internal/pat-101/send-sms"];
 
 /**
  * Thin edge-level gate: every /api/* route except the public ones above
